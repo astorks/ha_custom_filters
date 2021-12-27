@@ -2,6 +2,7 @@
 import urllib.parse
 import base64
 import zlib
+import json
 
 from random import Random, SystemRandom, shuffle
 
@@ -11,6 +12,18 @@ from homeassistant.helpers import template
 _LOGGER = logging.getLogger(__name__)
 
 _TemplateEnvironment = template.TemplateEnvironment
+
+
+def is_dict(value):
+    return type(value) is dict
+
+
+def is_json(value):
+    try:
+        json.loads(value)
+    except:
+        return False
+    return True
 
 
 def merge_dict(original_val, new_val):
@@ -81,6 +94,10 @@ def init(*args):
     env.filters["decode_base64_and_inflate"] = decode_base64_and_inflate
     env.filters["decode_valetudo_map"] = decode_valetudo_map
     env.filters["merge_dict"] = merge_dict
+    env.filters["is_dict"] = is_dict
+    env.globals["is_dict"] = is_dict
+    env.filters["is_json"] = is_json
+    env.globals["is_json"] = is_json
 
     return env
 
@@ -96,6 +113,10 @@ template._NO_HASS_ENV.filters["deflate_and_base64_encode"] = deflate_and_base64_
 template._NO_HASS_ENV.filters["decode_base64_and_inflate"] = decode_base64_and_inflate
 template._NO_HASS_ENV.filters["decode_valetudo_map"] = decode_valetudo_map
 template._NO_HASS_ENV.filters["merge_dict"] = merge_dict
+template._NO_HASS_ENV.filters["is_dict"] = is_dict
+template._NO_HASS_ENV.globals["is_dict"] = is_dict
+template._NO_HASS_ENV.filters["is_json"] = is_json
+template._NO_HASS_ENV.globals["is_json"] = is_json
 
 
 async def async_setup(hass, hass_config):
