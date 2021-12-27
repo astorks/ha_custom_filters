@@ -13,6 +13,10 @@ _LOGGER = logging.getLogger(__name__)
 _TemplateEnvironment = template.TemplateEnvironment
 
 
+def merge_dict(original_val, new_val):
+    return original_val | new_val
+
+
 def deflate(string):
     return zlib.decompress(string)
 
@@ -76,6 +80,7 @@ def init(*args):
     env.filters["deflate_and_base64_encode"] = deflate_and_base64_encode
     env.filters["decode_base64_and_inflate"] = decode_base64_and_inflate
     env.filters["decode_valetudo_map"] = decode_valetudo_map
+    env.filters["merge_dict"] = merge_dict
 
     return env
 
@@ -90,6 +95,7 @@ template._NO_HASS_ENV.filters["inflate"] = inflate
 template._NO_HASS_ENV.filters["deflate_and_base64_encode"] = deflate_and_base64_encode
 template._NO_HASS_ENV.filters["decode_base64_and_inflate"] = decode_base64_and_inflate
 template._NO_HASS_ENV.filters["decode_valetudo_map"] = decode_valetudo_map
+template._NO_HASS_ENV.filters["merge_dict"] = merge_dict
 
 
 async def async_setup(hass, hass_config):
